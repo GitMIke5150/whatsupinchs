@@ -1,0 +1,96 @@
+whatsupinchs/
+│── package.json
+│── server.js
+└── public/
+    └── index.html
+{
+  "name": "whatsupinchs",
+  "version": "1.0.0",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "body-parser": "^1.20.2",
+    "openai": "^4.0.0"
+  }
+}
+import express from "express";
+import bodyParser from "body-parser";
+import OpenAI from "openai";
+
+const app = express();
+app.use(bodyParser.json());
+app.use(express.static("public")); // serves your frontend
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+app.post("/chat", async (req, res) => {
+  try {
+    const userMessage = req.body.message;
+
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content: "You are WhatsUpInCHS, Charleston’s insider guide. Always reply with 3 recs per tier (low $, mid $$, luxury $$$). Include: name, why it’s good, price, status, quick actions (site + phone), key note, and end with 📸 Love your spot? Tag #whatsupinchs with a pic!"
+        },
+        { role: "user", content: userMessage }
+      ]
+    });
+
+    res.json({ reply: response.choices[0].message.content });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error processing your request.');
+  }
+});
+
+app.listen(3000, () => console.log("🚀 WhatsUpInCHS running on port 3000"));
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>WhatsUpInCHS</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#fefefe; margin:0; padding:0; text-align:center; }
+    #chat { max-width:600px; margin:20px auto; padding:10px; border:1px solid #ddd; border-radius:6px; background:#fff; min-height:300px; text-align:left; }
+    .msg { margin:10px 0; }
+    .user { font-weight:bold; color:#0066cc; }
+    .bot { color:#333; }
+    input, button { padding:10px; margin:10px; width:80%; max-width:400px; }
+    button { width:auto; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <h1>🌴 WhatsUpInCHS 🌴</h1>
+  <div id="chat"></div>
+  <input id="message" placeholder="Ask me about Charleston..." />
+  <button onclick="sendMessage()">Send</button>
+
+  <script>
+    async function sendMessage() {
+      const input = document.getElementById("message");
+      const chat = document.getElementById("chat");
+      const userMessage = input.value;
+      if (!userMessage) return;
+
+      chat.innerHTML += `<div class='msg user'>You: ${userMessage}</div>`;
+      input.value = "";
+
+      const res = await fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: userMessage })
+      });
+      const data = await res.json();
+
+      chat.innerHTML += `<div class='msg bot'>WhatsUpInCHS: ${data.reply}</div>`;
+      chat.scrollTop = chat.scrollHeight;
+    }
+  </script>
+</body>
+</html>
