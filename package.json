@@ -1,0 +1,13 @@
+{
+  "name": "val-geo-charleston",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "dev": "vercel dev",
+    "test": "node --test test/*.test.js",
+    "check": "node --check api/analyze.js && node --check api/ask.js && node --check api/geocode.js && node --check lib/gis.js && node --check lib/scoring.js && node --check public/app.js"
+  },
+  "dependencies": {}
+}
