@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#11110f" />
+  <title>VAL GEO — Charleston Location Intelligence</title>
+  <meta name="description" content="Point at a place. Ask anything. Evidence-backed location intelligence for Charleston." />
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@^6.9.0/dist/maplibre-gl.css" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div id="shell">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">V</span><div><strong>VAL GEO</strong><span>CHARLESTON INTELLIGENCE</span></div></div>
+      <form id="search-form" class="search">
+        <input id="search-input" autocomplete="off" placeholder="Search an address, then ask Val about it…" />
+        <button type="submit">SEARCH</button>
+        <div id="search-results" class="search-results hidden"></div>
+      </form>
+      <div class="mode-switch" role="group" aria-label="Analysis mode">
+        <button data-mode="business" class="active">BUSINESS</button>
+        <button data-mode="realestate">REAL ESTATE</button>
+        <button data-mode="development">DEVELOPMENT</button>
+      </div>
+    </header>
+
+    <main>
+      <section id="map-wrap">
+        <div id="map"></div>
+        <div class="map-hint" id="map-hint"><b>POINT AT A PLACE.</b> Click anywhere on Charleston to interrogate it.</div>
+        <div class="status-pill" id="status-pill">LIVE GIS · READY</div>
+        <div class="legend">
+          <span><i class="swatch zoning"></i>Zoning</span>
+          <span><i class="swatch parcel"></i>Parcel</span>
+          <span><i class="swatch future"></i>Future land use</span>
+          <span><i class="swatch flood"></i>Flood</span>
+          <span><i class="swatch historic"></i>Historic</span>
+          <span><i class="swatch activity"></i>Activity</span>
+        </div>
+      </section>
+
+      <aside id="intel-panel">
+        <div id="empty-state" class="empty-state">
+          <div class="eyebrow">LOCATION INTELLIGENCE</div>
+          <h1>Ask Val<br/>about <em>here.</em></h1>
+          <p>Click a parcel, block, building, street corner, waterfront edge, or commercial corridor. VAL GEO pulls the evidence before giving you an opinion.</p>
+          <div class="promise-grid">
+            <div><b>01</b><span>Official GIS</span></div>
+            <div><b>02</b><span>Visible sources</span></div>
+            <div><b>03</b><span>No invented facts</span></div>
+          </div>
+        </div>
+
+        <div id="intel" class="hidden">
+          <div class="panel-head">
+            <div class="eyebrow" id="mode-label">BUSINESS MODE</div>
+            <h2 id="address">Selected location</h2>
+            <div id="coordinates" class="coordinates"></div>
+          </div>
+
+          <section class="score-card">
+            <div class="score-ring"><span id="score">—</span><small>/100</small></div>
+            <div><div class="eyebrow">LOCATION SIGNAL SCORE</div><p id="brief"></p></div>
+          </section>
+
+          <section>
+            <div class="section-title"><span>SIGNAL BREAKDOWN</span><span class="rule"></span></div>
+            <div id="components" class="components"></div>
+          </section>
+
+          <section class="ask-card">
+            <div class="section-title"><span>ASK VAL ABOUT HERE</span><span class="rule"></span></div>
+            <form id="ask-form">
+              <textarea id="question" rows="3" placeholder="Would you open a restaurant here? What's the development risk? What should I investigate before buying this parcel?"></textarea>
+              <div class="quick-asks">
+                <button type="button" data-q="What is the biggest opportunity at this location?">Opportunity</button>
+                <button type="button" data-q="What are the biggest risks or constraints here?">Risks</button>
+                <button type="button" data-q="What should I verify next before making a decision?">Next diligence</button>
+              </div>
+              <button class="ask-submit" type="submit">INTERROGATE THIS LOCATION →</button>
+            </form>
+            <div id="answer" class="answer hidden"></div>
+          </section>
+
+          <section>
+            <div class="section-title"><span>EVIDENCE</span><span class="rule"></span><span id="feed-health" class="feed-health"></span></div>
+            <div id="evidence-cards"></div>
+          </section>
+
+          <section>
+            <div class="section-title"><span>NEARBY PLACES</span><span class="rule"></span></div>
+            <div id="places" class="places"></div>
+          </section>
+
+          <p class="disclaimer" id="disclaimer"></p>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
